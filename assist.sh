@@ -19,7 +19,7 @@ ver=0.1
 ## scripts.
 ##
 ## Using ASSIST
-## ==========
+## ============
 ##
 ## If used without arguments, _ASSIST_ will attempt to perform an
 ## archlinux install.

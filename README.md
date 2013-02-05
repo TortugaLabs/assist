@@ -17,7 +17,7 @@ tries to implement all the features available in the old AIF
 scripts.
 
 Using ASSIST
-==========
+============
 
 If used without arguments, _ASSIST_ will attempt to perform an
 archlinux install.
@@ -46,7 +46,7 @@ _ASSIST_ can be invoked to install Arch Linux in a number of ways
 You need to make sure that you have a working internet connection.
 Enter the following:
 
-   wget -O- _URL_ | sh
+   wget -O- _https://raw.github.com/alejandroliu/assist/master/assist.sh_ | sh
 
 
 ### Injecting into INITRAMFS boot
@@ -197,7 +197,7 @@ Normally this would include:
   - timezone
   - locale
 - set-up a basic `dhcp` based `netcfg` profile 
-- create a initcpio file
+- create a initramfs file
 
 This is a good time to take a coffee break.
 
@@ -441,7 +441,7 @@ found in the system.
 For DHCPv6
 for IPv6 autoconf
 
-### initcpio
+### initramfs
 
 Function to override: `assist_inst_mkinitcpio`.
 
