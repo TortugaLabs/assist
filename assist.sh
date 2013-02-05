@@ -1346,8 +1346,6 @@ EOF
   fi
 }
 
-
-
 assist_ready_to_commit() {
   [ -n "$auto_continue" ] && return
   dlg --defaultno --yesno "Last chance to turn back!
