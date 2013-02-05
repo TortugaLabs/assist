@@ -1,0 +1,78 @@
+#!/bin/sh
+
+#
+# Function to modify files in-place
+#
+fixfile() {
+  local FILTER=no
+
+  while [ $# -gt 0 ]
+  do
+    case "$1" in
+	--filter)
+	    FILTER=yes
+	    ;;
+	-*)
+	    echo "Invalid option: $1" 1>&2
+	    return 1
+	    ;;
+	*)
+	    break
+	    ;;
+    esac
+    shift
+  done
+
+  if [ $# -eq 0 ] ; then
+    echo "No file specified" 1>&2
+    return 1
+  elif [ $# -gt 1 ] ; then
+    echo "Ignoring additional options: $*" 1>&2
+  fi
+
+  local FILE="$1"
+
+  local OTXT=""
+  if [ -f $FILE ] ; then
+    OTXT=$(sed 's/^/:/' $FILE)
+  fi
+
+  if [ $FILTER = yes ] ; then
+    # Stdin is not contents but actually is a filter script
+    local INCODE="$(cat)"
+    if [ -f $FILE ] ; then
+      local NTXT="$(cat $FILE)"
+    else
+      local NTXT=""
+    fi
+    local NTXT=$(echo "$NTXT" | (eval "$INCODE" )| sed 's/^/:/' )
+  else
+    local NTXT=$(sed 's/^/:/')
+  fi
+  
+  if [ x"$OTXT" != x"$NTXT" ] ; then
+    sed 's/^://' > $FILE <<<"$NTXT"
+    echo $FILE updated 1>&2
+  fi
+}
+
+ver() {
+  desc=$(git describe | sed -e 's/-.*//')
+  branch_name=$(git symbolic-ref -q HEAD)
+  branch_name=${branch_name##refs/heads/}
+  branch_name=${branch_name:-HEAD}
+  if [ "master" = "$branch_name" ] ; then
+    branch_name=""
+  else
+    branch_name=":$branch_name"
+  fi
+  echo $desc$branch_name
+}
+
+sh assist.sh doc text | fixfile README.md
+
+fixfile --filter assist.sh <<EOF
+sed 's/^ver=.*/ver='$(ver)'/'
+EOF
+
+
