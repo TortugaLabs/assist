@@ -299,7 +299,7 @@ Boolean variables can be specified as this:
 
 _ASSIST_ can be invoked with command line parameters:
 
-   assist setup [opts ...]
+       assist setup [opts ...]
 
 Because _ASSIST_ accepts multiple sub-commands, you must specify the
 `setup` option (which is the default if no arguments are used).
@@ -307,7 +307,7 @@ Because _ASSIST_ accepts multiple sub-commands, you must specify the
 The arguments after that are either boolean or key-value pairs specifying
 the default options.  For example:
 
-   assist setup kbd=us auto_continue
+       assist setup kbd=us auto_continue
 
 
 ### Environment variable
@@ -322,7 +322,7 @@ command line arguments
 You can also load defaults from configuration files. These are
 specified from the boot prompt or the command line with:
 
-   src=_path or url to config file_
+       src=_path or url to config file_
 
 (Note that unlike boot variables that need the `assist_` prefix, 
 configuration scripts only need `src` to be specified.)
@@ -445,8 +445,6 @@ Function to override: `assist_inst_netcfg`.
 Creates a basic `netcfg` profile for all the wired interfaces
 found in the system.
 
-For DHCPv6
-for IPv6 autoconf
 
 ### initramfs
 
@@ -479,13 +477,14 @@ Displays the on-line documentation for _ASSIST_
 
 Usage:
 
-   assist doc [options]
+       assist doc [options]
 
 Options:
 
-- text : plain text output
-- html : HTML document
-- viewhtml : Will show manual on a browser window.
+- `text` : plain text output
+- `html` : HTML document
+- `viewhtml` : Will show manual on a browser window.
+
 inject
 ------
 
@@ -494,5 +493,25 @@ launch the _ASSIST_ script automatically on boot
 
 Usage:
 
-   assist inject [source_img] [destination_img]
+       assist inject [source_img] [destination_img]
+
+
+Copyright
+=========
+
+   ASSIST 0.1pre  
+   Copyright (C) 2013 Alejandro Liu
+
+   This program is free software: you can redistribute it and/or modify
+   it under the terms of the GNU General Public License as published by
+   the Free Software Foundation, either version 2 of the License, or
+   (at your option) any later version.
+
+   This program is distributed in the hope that it will be useful,
+   but WITHOUT ANY WARRANTY; without even the implied warranty of
+   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+   GNU General Public License for more details.
+
+   You should have received a copy of the GNU General Public License
+   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
