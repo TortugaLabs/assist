@@ -68,11 +68,10 @@ ver() {
   fi
   echo $desc$branch_name
 }
-
-sh assist.sh doc text | fixfile README.md
-
 fixfile --filter assist.sh <<EOF
 sed 's/^ver=.*/ver='$(ver)'/'
 EOF
+sh assist.sh doc text | fixfile README.md
+
 
 

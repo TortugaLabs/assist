@@ -819,7 +819,7 @@ assist_kcmdline_cfg() {
 ##
 ## _ASSIST_ can be invoked with command line parameters:
 ##
-##    assist setup [opts ...]
+##        assist setup [opts ...]
 ##
 ## Because _ASSIST_ accepts multiple sub-commands, you must specify the
 ## `setup` option (which is the default if no arguments are used).
@@ -827,7 +827,7 @@ assist_kcmdline_cfg() {
 ## The arguments after that are either boolean or key-value pairs specifying
 ## the default options.  For example:
 ##
-##    assist setup kbd=us auto_continue
+##        assist setup kbd=us auto_continue
 ##
 assist_parse_args() {
   local setting
@@ -862,7 +862,7 @@ assist_preconfig() {
 ## You can also load defaults from configuration files. These are
 ## specified from the boot prompt or the command line with:
 ##
-##    src=_path or url to config file_
+##        src=_path or url to config file_
 ##
 ## (Note that unlike boot variables that need the `assist_` prefix, 
 ## configuration scripts only need `src` to be specified.)
@@ -1168,9 +1168,9 @@ assist_inst_netcfg() {
 	DESCRIPTION='Basic dhcp config for $dev'
 	INTERFACE='$dev'
 	IP='dhcp'
-	## For DHCPv6
+	# # For DHCPv6
 	#IP6='dhcp'
-	## for IPv6 autoconf
+	# # for IPv6 autoconf
 	#IP6='stateless'
 	EOF
   done
@@ -1238,7 +1238,7 @@ assist_main() {
 ##
 ## Usage:
 ##
-##    assist doc [options]
+##        assist doc [options]
 ##
 ## Options:
 ##
@@ -1258,15 +1258,15 @@ assist_doc() {
       -e 's/^[ 	]*##	/	/' | (
       case "$1" in
 	text)
-	  ## - text : plain text output
+	  ## - `text` : plain text output
 	  cat
 	  ;;
         html)
-	  ## - html : HTML document
+	  ## - `html` : HTML document
 	  markdown
 	  ;;
 	viewhtml)
-	  ## - viewhtml : Will show manual on a browser window.
+	  ## - `viewhtml` : Will show manual on a browser window.
 	  if type firefox ; then
 	    wrkdir=$(mktemp -d)
 	    trap "rm -rf $wrkdir" EXIT
@@ -1286,6 +1286,7 @@ assist_doc() {
   )
 }
 
+##
 ## inject
 ## ------
 ##
@@ -1294,7 +1295,7 @@ assist_doc() {
 ##
 ## Usage:
 ##
-##    assist inject [source_img] [destination_img]
+##        assist inject [source_img] [destination_img]
 ##
 assist_inject() {
   [ $# -ne 2 ] && fatal "Usage: <src> <dst>"
@@ -1464,3 +1465,24 @@ oIFS="$IFS"
 [ -n "$url" ] && return	# Avoid src loops...
 assist_main "$@"
 exit $?
+
+##
+## Copyright
+## =========
+##
+##    ASSIST <VER>  
+##    Copyright (C) 2013 Alejandro Liu
+##
+##    This program is free software: you can redistribute it and/or modify
+##    it under the terms of the GNU General Public License as published by
+##    the Free Software Foundation, either version 2 of the License, or
+##    (at your option) any later version.
+##
+##    This program is distributed in the hope that it will be useful,
+##    but WITHOUT ANY WARRANTY; without even the implied warranty of
+##    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+##    GNU General Public License for more details.
+##
+##    You should have received a copy of the GNU General Public License
+##    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+##
