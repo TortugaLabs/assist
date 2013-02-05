@@ -1,8 +1,9 @@
 #!/bin/sh
-ver=0.1
+ver=0.1pre
 ##
-## Arch System Software Installation Scripting Tool
-## ================================================
+## ASSIST (<VER>)
+## ==============
+## _Arch System Software Installation Scripting Tool_
 ##
 ## _ASSIST_ is a script utility used for new Arch Linux installs.
 ##
@@ -43,18 +44,18 @@ assist_setup() {
     # - final clean-up
     assist_finalize
 }
-## It will do so in the following steps:
+## It will do so in the following stages:
 ##
-## - pre-config : Usually configuration through command line paramenters
+## - `pre-config` : Usually configuration through command line paramenters
 ##   entered as boot command options, arguments to _ASSIST_ or environment
 ##   variables.
-## - pre-input : Some basic configuration that might need to happen *before*
+## - `pre-input` : Some basic configuration that might need to happen *before*
 ##   we have an available network
-## - setup config : Perform any (network based) configuration activities.
-## - setup input : Collect additional input on how the installation needs
+## - `setup config` : Perform any (network based) configuration activities.
+## - `setup input` : Collect additional input on how the installation needs
 ##   to be performed.
-## - installation : Performs the bulk of the install task.
-## - Post input : Perform some post installation activities
+## - `installation` : Performs the bulk of the install task.
+## - `Post input` : Perform some post installation activities
 ##
 ## Invoking _ASSIST_
 ## ---------------
@@ -67,13 +68,18 @@ assist_setup() {
 ## You need to make sure that you have a working internet connection.
 ## Enter the following:
 ##
-##    wget -O- _https://raw.github.com/alejandroliu/assist/master/assist.sh_ | sh
+##        wget -O- https://raw.github.com/alejandroliu/assist/master/assist.sh | sh
 ##
 ##
 ## ### Injecting into INITRAMFS boot
 ##
+##        assist.sh inject _orig.img_ _new.img_
+##
 ## It will edit an initrd cpio image and will create a hook that will
-## arrange for assist to run automatically.
+## arrange for _ASSIST_ to run automatically.
+##
+## This is particularly useful for automated installation using a PXE
+## environment.
 ##
 ######################################################################
 ##
@@ -121,8 +127,8 @@ assist_kbdlayout() {
 ## #### Networking
 ##
 ## Usually a DHCP service is already enabled for all available devices.  
-## Somtimes this may fail, or you need to configure either __wireless__
-## or static IP.
+## Somtimes this may fail, or you need to configure either _wireless_
+## or _static IP_.
 ##
 assist_netsetup() {
   # Configured through PXE...
@@ -425,11 +431,11 @@ assist_input_bootloader() {
 ##
 ## The following options are available:
 ##
-## - edit  
+## - `edit`  
 ##   Simply edit the mirrorlist using a text editor
-## - country  
+## - `country`  
 ##   Will generate a mirror list based on your country.
-## - none  
+## - `none`  
 ##   Simply use the existing mirrorlist.
 ##
 assist_input_mirrors() {
@@ -526,17 +532,18 @@ This copy of the mirrorlist will be installed on your new system by pacstrap as 
       country=$(dlg --menu "Select your country" 0 0 0 "${countries[@]}")
       [ -z $country ] && aborted
       assist_mirror_by_country $lst "$country"
-      edit $lst
+      dlg --yesno "Do you want to edit/review the mirror list?" 0 0 \
+	  && edit $lst
       ;;
   esac
 }
 ##
 ## When configuring by country, you will select a country and this will
-# in turn use the URL 
+## in turn use the URL:  
 ##
 ## <https://www.archlinux.org/mirrorlist/?country=$country&protocol=ftp&protocol=http&ip_version=4&use_mirror_status=on>
 ##
-## To create an inital mirrorlist.  Then you may review and modify it.
+## To create an initial mirrorlist.  Then you may review and modify it.
 ##
 assist_mirror_by_country() {
   local lst="$1" country="$2"
@@ -550,7 +557,7 @@ assist_mirror_by_country() {
 ##
 ## ### Software Selection
 ##
-## This will let your customise the initial software selection.  Note that
+## This will let you customise the initial software selection.  Note that
 ## this is just a subset of all the software available in ArchLinux.
 ## The idea is that this is enough software to bootstrap your system.
 ## You can then later use `pacman` to add any additional software.
@@ -1457,7 +1464,3 @@ oIFS="$IFS"
 [ -n "$url" ] && return	# Avoid src loops...
 assist_main "$@"
 exit $?
-
-##
-## CMDLINE:
-## assist_kbd=us
