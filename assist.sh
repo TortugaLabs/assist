@@ -1,4 +1,5 @@
 #!/bin/sh
+ver=0.1
 ##
 ## Arch System Software Installation Scripting Tool
 ## ================================================
@@ -66,7 +67,7 @@ assist_setup() {
 ## You need to make sure that you have a working internet connection.
 ## Enter the following:
 ##
-##    wget -O- _URL_ | sh
+##    wget -O- _https://raw.github.com/alejandroliu/assist/master/assist.sh_ | sh
 ##
 ##
 ## ### Injecting into INITRAMFS boot
@@ -638,7 +639,7 @@ assist_input_locale() {
 ##   - timezone
 ##   - locale
 ## - set-up a basic `dhcp` based `netcfg` profile 
-## - create a initcpio file
+## - create a initramfs file
 ##
 ## This is a good time to take a coffee break.
 ##
@@ -1174,7 +1175,7 @@ assist_inst_netcfg() {
 }
 
 ##
-## ### initcpio
+## ### initramfs
 ##
 ## Function to override: `assist_inst_mkinitcpio`.
 ##
@@ -1207,9 +1208,6 @@ assist_main() {
     setup)
       ## - `setup` - Performs an ArchLinux install
       assist_setup "$@"
-      ;;
-    ver)
-      scrver "$0"
       ;;
     *)
       fatal "ASSIST Unknown sub-command: $op"
@@ -1311,7 +1309,7 @@ assist_inject() {
     declare -f run_latehook
   ) > $WRKDIR/hooks/assist
   chmod 755  $WRKDIR/hooks/assist
-  sed -e 's/scrver $0/echo "'"$(scrver $0)"'"/' <"$0" >$WRKDIR/assist.sh
+  cat < "$0"  >$WRKDIR/assist.sh
   chmod 755 $WRKDIR/assist.sh
   echo -n "Repacking image "
   ( cd $WRKDIR ; find . | cpio -H newc -o ) | gzip -v9 > "$2"
@@ -1423,40 +1421,6 @@ nparts() {
  return 0
 }
 
-scrver() {
-  local dir=$(cd $(dirname $0) && pwd)
-  local rv="vUnknonw"
-  if [ -z $dir ] ; then
-    echo $rv
-    return
-  fi
-  [ -f $dir/version.txt ] && rv=$(cat $dir/version.txt)
-
-  if ! type git >/dev/null 2>&1 ; then
-    echo $rv
-    return
-  fi
-  gitdir=$(
-      cd $dir 
-      gitdir=$(git rev-parse --git-dir 2>/dev/null) && cd $gitdir/.. && pwd
-  )
-  if [ -z $gitdir ] ; then
-    echo $rv
-    return
-  fi
-  local desc branch_name
-  desc=$(cd $gitdir && git describe --dirty=,M)
-  branch_name=$(cd $gitdir &&git symbolic-ref -q HEAD)
-  branch_name=${branch_name##refs/heads/}
-  branch_name=${branch_name:-HEAD}
-  if [ "master" = "$branch_name" ] ; then
-    branch_name=""
-  else
-    branch_name=":$branch_name"
-  fi
-  echo $desc$branch_name
-}
-
 pick_netif() {
   if [ $# -eq 1 ] ; then
     echo $1
@@ -1490,7 +1454,6 @@ umount_all() {
 ######################################################################
 # Some preparation code.  This makes it easier to deploy from web scripts
 oIFS="$IFS"
-[ -z "$ver" ] && ver="$(scrver $0)"
 [ -n "$url" ] && return	# Avoid src loops...
 assist_main "$@"
 exit $?
