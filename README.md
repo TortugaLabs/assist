@@ -1,5 +1,5 @@
 
-ASSIST (0.1rel-3-g0a859f5:dev)
+ASSIST (0.2rel)
 ==============
 _Arch System Software Installation Scripting Tool_
 
@@ -499,7 +499,7 @@ Usage:
 Copyright
 =========
 
-   ASSIST 0.1rel-3-g0a859f5:dev  
+   ASSIST 0.2rel  
    Copyright (C) 2013 Alejandro Liu
 
    This program is free software: you can redistribute it and/or modify
