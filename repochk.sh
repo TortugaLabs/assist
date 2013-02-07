@@ -53,25 +53,53 @@ fixfile() {
   if [ x"$OTXT" != x"$NTXT" ] ; then
     sed 's/^://' > $FILE <<<"$NTXT"
     echo $FILE updated 1>&2
+    return 1
+  else
+    return 0
   fi
 }
 
 ver() {
-  desc=$(git describe | sed -e 's/-.*//')
+  desc=$(git describe)
   branch_name=$(git symbolic-ref -q HEAD)
   branch_name=${branch_name##refs/heads/}
   branch_name=${branch_name:-HEAD}
   if [ "master" = "$branch_name" ] ; then
     branch_name=""
+    desc=$(sed -e 's/-.*//' <<<"$desc")
   else
     branch_name=":$branch_name"
   fi
   echo $desc$branch_name
 }
-#fixfile --filter assist.sh <<EOF
-#sed 's/^ver=.*/ver='$(ver)'/'
-#EOF
-sh assist.sh doc text | fixfile README.md
+
+if [ $# -gt 0 ] ; then
+  case "$1" in
+    ver)
+      ver
+      ;;
+    bumpver)
+      if [ $# -eq 1 ] ; then
+	ver=$(ver)
+      else
+	ver=$2
+      fi
+      ( sed 's/^ver=.*/ver='$ver'/' assist.sh | fixfile assist.sh ) \
+	  || echo "Bumped to version $ver"
+  esac
+  exit
+fi
+
+
+[ -d ".git" ] || ( echo "Not in a GIT repo" ; exit 1) || exit 1
+
+ret=0
+[ ! -f .git/hooks/pre-commit ] && ln -s ../../repochk.sh .git/hooks/pre-commit
+( sh assist.sh doc text | fixfile README.md ) || ret=1
+if [ $ret -ne 0 ] ;then
+  echo "Files updated, pre-commit aborted"
+fi
+exit $ret
 
 
 

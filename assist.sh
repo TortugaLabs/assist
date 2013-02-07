@@ -1,5 +1,5 @@
 #!/bin/sh
-ver=0.1rel
+ver=0.1rel-3-g0a859f5:dev
 ##
 ## ASSIST (<VER>)
 ## ==============
@@ -1153,7 +1153,7 @@ assist_inst_locale() {
 ## found in the system.
 ##
 assist_inst_netcfg() {
-  local net_profiles="" dev wdev np
+  local net_profiles="" dev wdev np oldnames=n
 
   # Basic netcfg install
   for dev in $(grep '^ *[a-z0-9]*:' /proc/net/dev | cut -d: -f1 | grep -v lo )
@@ -1166,6 +1166,8 @@ assist_inst_netcfg() {
       break
     done
     [ $wifi = yes ] && continue
+    # Determine if we are using oldstyle/newstyle names
+    grep -q '^eth' <<<"$dev" && oldnames=y
 
     net_profiles="$net_profiles net-$dev"
     cat >/mnt/etc/network.d/net-$dev <<-EOF
@@ -1184,6 +1186,10 @@ assist_inst_netcfg() {
   do
       arch-chroot /mnt systemctl enable netcfg@$np.service
   done
+  if [ $oldnames = y ] ; then
+    echo "Disabling predictable Network Interface names..."
+    ln -s /dev/null /mnt/etc/udev/rules.d/80-net-name-slot.rules
+  fi
 }
 
 ##
@@ -1469,12 +1475,6 @@ oIFS="$IFS"
 assist_main "$@"
 exit $?
 
-##
-## BUGS
-## ====
-##
-## - Does not handle the change in systemd-197 that now uses predictable
-##   network names.
 ##
 ## Copyright
 ## =========
