@@ -1,5 +1,5 @@
 
-ASSIST (0.1pre:dev)
+ASSIST (0.1pre:rc0.1)
 ==============
 _Arch System Software Installation Scripting Tool_
 
@@ -499,7 +499,7 @@ Usage:
 Copyright
 =========
 
-   ASSIST 0.1pre:dev  
+   ASSIST 0.1pre:rc0.1  
    Copyright (C) 2013 Alejandro Liu
 
    This program is free software: you can redistribute it and/or modify
