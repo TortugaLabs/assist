@@ -1,5 +1,5 @@
 #!/bin/sh
-ver=0.1pre
+ver=0.1rel
 ##
 ## ASSIST (<VER>)
 ## ==============
@@ -43,6 +43,8 @@ assist_setup() {
     assist_post_input
     # - final clean-up
     assist_finalize
+    echo "DONE"
+    exit
 }
 ## It will do so in the following stages:
 ##
@@ -624,7 +626,7 @@ Select City" 0 0 0 "${szlst[@]}")
 
 assist_input_locale() {
   [ -n "$locale" ] && return
-  locale=$(dlg --menu "Enter locale" 0 0 0 \
+  locale=$(dlg --default-item 'en_US.UTF-8' --menu "Enter locale" 0 0 0 \
       $(grep '^#*[a-z][a-z].*[ 	].*$' /etc/locale.gen | sed -e 's/#//' ))
   [ -z "$locale" ] && aborted
 }
@@ -692,16 +694,19 @@ assist_root_pwd() {
 ##
 assist_new_user() {
   [ -n "$auto_continue" ] && return
-  local uid_min=$(grep UID_MIN /etc/login.defs|awk '{print $2}')
+  local uid_min=$(grep '^UID_MIN' /mnt/etc/login.defs|awk '{print $2}')
   while dlg --yesno "Do you want to create a new user?
 
 The following users are currently defined in the system:
 
-$(awk -F: '$3 > '$uid_min' { print $1}' /etc/passwd | tr '\n' ' ')" 0 0 
+$(awk -F: '$3 >= '$uid_min' { print $1}' /mnt/etc/passwd | tr '\n' ' ')" 0 0 
   do
-    arch-chroot /mnt adduser
+    echo ''
+    echo -n "Enter username: "
+    read new_user
+    [ -z "$new_user" ] && continue
+    arch-chroot /mnt sh -c "( useradd -m -g users -s /bin/bash $new_user && chfn $new_user && passwd $new_user ) || read -p 'Press Enter: ' none"
   done
-  exit
 }
 ##
 ## #### Creating users
@@ -1345,8 +1350,6 @@ rm -f /etc/profile.d/assist.sh
 EOF
   fi
 }
-
-
 
 assist_ready_to_commit() {
   [ -n "$auto_continue" ] && return
