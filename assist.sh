@@ -1470,6 +1470,12 @@ assist_main "$@"
 exit $?
 
 ##
+## BUGS
+## ====
+##
+## - Does not handle the change in systemd-197 that now uses predictable
+##   network names.
+##
 ## Copyright
 ## =========
 ##
