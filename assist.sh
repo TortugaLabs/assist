@@ -43,6 +43,7 @@ assist_setup() {
     assist_post_input
     # - final clean-up
     assist_finalize
+    echo ''
     echo "DONE"
     exit
 }
@@ -268,7 +269,7 @@ assist_input_hostname() {
 ## #### Partitioning
 ##
 assist_input_partition() {
-  [ -n "$partmode" -a -n "$target" -a -n "$autopart" ] && return
+  [ -n "$target" -a -n "$autopart" ] && return
 
   partmode=$(dlg \
       --menu "Partitioning mode" 0 0 0 \
