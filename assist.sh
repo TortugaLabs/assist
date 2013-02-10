@@ -573,7 +573,7 @@ assist_input_software() {
     IFS=":" ; set - $j ; IFS="$oIFS"
     for i in $(eval echo \$sw_$1)
     do
-      opts+=( $i "mandatory"  "$2" )
+      opts+=( $i "$1"  "$2" )
     done
   done
   sw_list=$(dlg --checklist "Select software to install" 0 0 0 "${opts[@]}" | tr -d '"' )
@@ -1394,7 +1394,7 @@ dlg() (
     exec 3>&1
     exec 1>&2
     exec 2>&3
-    exec dialog --backtitle "Archlinux Installer Script ($ver)" "$@"
+    exec dialog --backtitle "ASSIST ($ver)" "$@"
 )
 EDITOR=
 edit() {
