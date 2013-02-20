@@ -1,5 +1,5 @@
 
-ASSIST (0.2rel)
+ASSIST (0.3dev)
 ==============
 _Arch System Software Installation Scripting Tool_
 
@@ -411,8 +411,8 @@ Function to override: `assist_inst_$bootloader`
 
 #### syslinux
 
-Will modify the `syslinux.cfg` file to point to the right `root` 
-device and also will add the `nomodeset` parameter if it was 
+Will modify the `syslinux.cfg` file to point to the right `root`
+device and also will add the `nomodeset` parameter if it was
 specified when booting the installation media.
 
 
@@ -499,7 +499,7 @@ Usage:
 Copyright
 =========
 
-   ASSIST 0.2rel  
+   ASSIST 0.3dev  
    Copyright (C) 2013 Alejandro Liu
 
    This program is free software: you can redistribute it and/or modify

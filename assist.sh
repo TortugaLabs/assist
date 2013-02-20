@@ -1,5 +1,5 @@
 #!/bin/sh
-ver=0.2rel
+ver=0.3dev
 ##
 ## ASSIST (<VER>)
 ## ==============
@@ -27,6 +27,12 @@ ver=0.2rel
 ##
 ######################################################################
 #
+# This is the main setup function.  The bulk of the work happens
+# here.
+#
+# Except for the first two function calls, all the functions in
+# `assist_setup` can be overriden.
+#
 assist_setup() {
     exec </dev/tty >/dev/tty 2>&1
     # - preparation (i.e. no network required)
@@ -45,6 +51,7 @@ assist_setup() {
     assist_finalize
     echo ''
     echo "DONE"
+    # Make sure we exit otherwise it hangs (tries to read for stdin)
     exit
 }
 ## It will do so in the following stages:
@@ -250,6 +257,7 @@ assist_net_wifi() {
 ## - locale and timezone
 ##
 assist_setup_input() {
+  # Prompt the user for configuration parameters...
   assist_input_hostname
   assist_input_partition
   assist_input_bootloader
@@ -318,7 +326,7 @@ pick_disc() {
 ## When changing partition sizes, entering a value of "`0`" wil cause
 ## that partition to *not* be created.  While entering an _empty_ or
 ## _blank_ size, will make that partition as large as possible.
-## 
+##
 
 assist_inputpart_autopart() {
   if [ -z "$target" ] ; then
@@ -978,6 +986,7 @@ assist_inst_post() {
 ## mounted automatically under `/mnt`.
 ## 
 assist_inst_part1_syslinux() {
+  # Make sure that we have a valid boot record
   dd bs=440 conv=notrunc count=1 if=/usr/lib/syslinux/gptmbr.bin of=$disc \
        || exit 1
 }
@@ -1077,10 +1086,10 @@ assist_inst_fstab() {
 ##
 ## #### syslinux
 ##
-## Will modify the `syslinux.cfg` file to point to the right `root` 
-## device and also will add the `nomodeset` parameter if it was 
+## Will modify the `syslinux.cfg` file to point to the right `root`
+## device and also will add the `nomodeset` parameter if it was
 ## specified when booting the installation media.
-## 
+##
 assist_inst_syslinux() {
   local rootdev=$(awk '$2 == "/mnt" { print $1 }' < /proc/mounts)
 
@@ -1273,17 +1282,23 @@ assist_doc() {
 	  ## - `text` : plain text output
 	  cat
 	  ;;
-        html)
+	html)
 	  ## - `html` : HTML document
 	  markdown
 	  ;;
 	viewhtml)
 	  ## - `viewhtml` : Will show manual on a browser window.
 	  if type firefox ; then
+	    # If firefox is available, we start it with a new
+	    # profile. This make sure that we do not reuse any
+	    # running firefox instance, and a new instance is
+	    # created.  When the users closes the firefox window
+	    # then we know that we can delete the temp file.
 	    wrkdir=$(mktemp -d)
 	    trap "rm -rf $wrkdir" EXIT
 	    markdown > $wrkdir/assist_doc.html
 	    HOME=$wrkdir firefox -no-remote $wrkdir/assist_doc.html
+	    rm -rf $wrkdir
 	  else
 	    local output=/tmp/md.$UID.html
 	    rm -f $output
@@ -1382,6 +1397,9 @@ assist_finalize() {
 
 ######################################################################
 #
+# The following are simple, useful support functions
+#
+######################################################################
 fatal() {
   echo "$@" 1>&2
   exit 1
@@ -1397,6 +1415,7 @@ dlg() (
     exec 2>&3
     exec dialog --backtitle "ASSIST ($ver)" "$@"
 )
+
 EDITOR=
 edit() {
   # let user choose preferred editor
