@@ -1,5 +1,5 @@
 #!/bin/sh
-ver=0.3dev
+ver=0.3rel
 ##
 ## ASSIST (<VER>)
 ## ==============
