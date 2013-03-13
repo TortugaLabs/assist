@@ -1,5 +1,5 @@
 #!/bin/sh
-ver=0.2rel
+ver=0.3dev
 ##
 ## ASSIST (<VER>)
 ## ==============
@@ -27,6 +27,12 @@ ver=0.2rel
 ##
 ######################################################################
 #
+# This is the main setup function.  The bulk of the work happens
+# here.
+#
+# Except for the first two function calls, all the functions in
+# `assist_setup` can be overriden.
+#
 assist_setup() {
     exec </dev/tty >/dev/tty 2>&1
     # - preparation (i.e. no network required)
@@ -43,7 +49,9 @@ assist_setup() {
     assist_post_input
     # - final clean-up
     assist_finalize
+    echo ''
     echo "DONE"
+    # Make sure we exit otherwise it hangs (tries to read for stdin)
     exit
 }
 ## It will do so in the following stages:
@@ -66,7 +74,7 @@ assist_setup() {
 ##
 ##
 ## ### From the net
-## 
+##
 ## You need to make sure that you have a working internet connection.
 ## Enter the following:
 ##
@@ -118,10 +126,10 @@ assist_kbdlayout() {
       || kbd="$dftkbd"
   loadkeys $kbd || pause
 }
-## For many countries and keyboard types appropriate keymaps are available 
-## already, and a command like `loadkeys uk` might do what you want. More 
-## available keymap files can be found in `/usr/share/kbd/keymaps/` 
-## (you can omit the keymap path and file extension when using `loadkeys`). 
+## For many countries and keyboard types appropriate keymaps are available
+## already, and a command like `loadkeys uk` might do what you want. More
+## available keymap files can be found in `/usr/share/kbd/keymaps/`
+## (you can omit the keymap path and file extension when using `loadkeys`).
 ##
 ## _ASSIST_ will look in `/usr/share/kbd/keymaps/` and let you select a
 ## Keymap from there.
@@ -129,7 +137,7 @@ assist_kbdlayout() {
 ## #### Networking
 ##
 ## Usually a DHCP service is already enabled for all available devices.  
-## Somtimes this may fail, or you need to configure either _wireless_
+## Sometimes this may fail, or you need to configure either _wireless_
 ## or _static IP_.
 ##
 assist_netsetup() {
@@ -249,6 +257,7 @@ assist_net_wifi() {
 ## - locale and timezone
 ##
 assist_setup_input() {
+  # Prompt the user for configuration parameters...
   assist_input_hostname
   assist_input_partition
   assist_input_bootloader
@@ -268,7 +277,7 @@ assist_input_hostname() {
 ## #### Partitioning
 ##
 assist_input_partition() {
-  [ -n "$partmode" -a -n "$target" -a -n "$autopart" ] && return
+  [ -n "$target" -a -n "$autopart" ] && return
 
   partmode=$(dlg \
       --menu "Partitioning mode" 0 0 0 \
@@ -317,7 +326,7 @@ pick_disc() {
 ## When changing partition sizes, entering a value of "`0`" wil cause
 ## that partition to *not* be created.  While entering an _empty_ or
 ## _blank_ size, will make that partition as large as possible.
-## 
+##
 
 assist_inputpart_autopart() {
   if [ -z "$target" ] ; then
@@ -406,7 +415,7 @@ assist_inputpart_none() {
 ## #### Bootloader
 ##
 ## In the spirit of keeping things simple, _ASSIST_ defaults to *SYSLINUX*`
-## for the bootloader.  
+## for the bootloader.
 ##
 
 assist_input_syslinux() {
@@ -428,7 +437,7 @@ assist_input_bootloader() {
 ##
 ## This lets you customize the pacman mirror list.
 ##
-## This copy of the mirrorlist will be installed on your new system by 
+## This copy of the mirrorlist will be installed on your new system by
 ## pacstrap as well, so it's worth getting it right.
 ##
 ## The following options are available:
@@ -480,55 +489,55 @@ This copy of the mirrorlist will be installed on your new system by pacstrap as 
     country)
       # Select country
       local countries=(
-	  "AU" "Australia" 
+	  "AU" "Australia"
 	  "BY" "Belarus"
-	  "BE" "Belgium" 
-	  "BR" "Brazil" 
-	  "BG" "Bulgaria" 
-	  "CA" "Canada" 
-	  "CL" "Chile" 
-	  "CN" "China" 
-	  "CO" "Colombia" 
-	  "CZ" "Czech Republic" 
-	  "DE" "Denmark" 
-	  "EE" "Estonia" 
+	  "BE" "Belgium"
+	  "BR" "Brazil"
+	  "BG" "Bulgaria"
+	  "CA" "Canada"
+	  "CL" "Chile"
+	  "CN" "China"
+	  "CO" "Colombia"
+	  "CZ" "Czech Republic"
+	  "DE" "Denmark"
+	  "EE" "Estonia"
 	  "FI" "Finland"
-	  "FR" "France" 
-	  "DE" "Germany" 
-	  "GR" "Greece" 
-	  "HU" "Hungary" 
-	  "IN" "India" 
-	  "IE" "Ireland" 
-	  "IL" "Israel" 
-	  "IT" "Italy" 
-	  "JP" "Japan" 
-	  "KZ" "Kazakhstan" 
-	  "KR" "Korea" 
-	  "LV" "Latvia" 
-	  "LU" "Luxembourg" 
-	  "MK" "Macedonia" 
-	  "NL" "Netherlands" 
+	  "FR" "France"
+	  "DE" "Germany"
+	  "GR" "Greece"
+	  "HU" "Hungary"
+	  "IN" "India"
+	  "IE" "Ireland"
+	  "IL" "Israel"
+	  "IT" "Italy"
+	  "JP" "Japan"
+	  "KZ" "Kazakhstan"
+	  "KR" "Korea"
+	  "LV" "Latvia"
+	  "LU" "Luxembourg"
+	  "MK" "Macedonia"
+	  "NL" "Netherlands"
 	  "NC" "New Caledonia"
-	  "NZ" "New Zealand" 
-	  "NO" "Norway" 
-	  "PL" "Poland" 
-	  "PT" "Portugal" 
-	  "RO" "Romania" 
-	  "RU" "Russian" 
-	  "RS" "Serbia" 
-	  "SG" "Singapore" 
-	  "SK" "Slovakia" 
+	  "NZ" "New Zealand"
+	  "NO" "Norway"
+	  "PL" "Poland"
+	  "PT" "Portugal"
+	  "RO" "Romania"
+	  "RU" "Russian"
+	  "RS" "Serbia"
+	  "SG" "Singapore"
+	  "SK" "Slovakia"
 	  "ZA" "South Africa"
-	  "ES" "Spain" 
-	  "LK" "Sri Lanka" 
-	  "SE" "Sweden" 
-	  "CH" "Switzerland" 
-	  "TW" "Taiwan" 
-	  "TR" "Turkey" 
-	  "UA" "Ukraine" 
-	  "GB" "United Kingdom" 
-	  "US" "United States" 
-	  "UZ" "Uzbekistan" 
+	  "ES" "Spain"
+	  "LK" "Sri Lanka"
+	  "SE" "Sweden"
+	  "CH" "Switzerland"
+	  "TW" "Taiwan"
+	  "TR" "Turkey"
+	  "UA" "Ukraine"
+	  "GB" "United Kingdom"
+	  "US" "United States"
+	  "UZ" "Uzbekistan"
 	  "VN" "Viet Nam"
       )
       country=$(dlg --menu "Select your country" 0 0 0 "${countries[@]}")
@@ -541,7 +550,7 @@ This copy of the mirrorlist will be installed on your new system by pacstrap as 
 }
 ##
 ## When configuring by country, you will select a country and this will
-## in turn use the URL:  
+## in turn use the URL:
 ##
 ## <https://www.archlinux.org/mirrorlist/?country=$country&protocol=ftp&protocol=http&ip_version=4&use_mirror_status=on>
 ##
@@ -573,7 +582,7 @@ assist_input_software() {
     IFS=":" ; set - $j ; IFS="$oIFS"
     for i in $(eval echo \$sw_$1)
     do
-      opts+=( $i "mandatory"  "$2" )
+      opts+=( $i "$1"  "$2" )
     done
   done
   sw_list=$(dlg --checklist "Select software to install" 0 0 0 "${opts[@]}" | tr -d '"' )
@@ -589,7 +598,7 @@ assist_input_software() {
 
 assist_input_tz() {
   [ -n "$tz" ] && return
-  
+
   local zone subzone zlst szlst i zdir=/usr/share/zoneinfo back="<back>"
   zlst=()
   for i in $(ls -1 $zdir)
@@ -647,7 +656,7 @@ assist_input_locale() {
 ##   - hostname
 ##   - timezone
 ##   - locale
-## - set-up a basic `dhcp` based `netcfg` profile 
+## - set-up a basic `dhcp` based `netcfg` profile
 ## - create a initramfs file
 ##
 ## This is a good time to take a coffee break.
@@ -699,7 +708,7 @@ assist_new_user() {
 
 The following users are currently defined in the system:
 
-$(awk -F: '$3 >= '$uid_min' { print $1}' /mnt/etc/passwd | tr '\n' ' ')" 0 0 
+$(awk -F: '$3 >= '$uid_min' { print $1}' /mnt/etc/passwd | tr '\n' ' ')" 0 0
   do
     echo ''
     echo -n "Enter username: "
@@ -752,7 +761,7 @@ assist_cfg_defaults() {
   locale=""
   ##
   ## In addition, the following boolean variables control user interaction
-  ## 
+  ##
   ## - `auto_continue` : will skip some of the prompts
   auto_continue=""
   ## - `no_pause : will skip all `pause` prompts.
@@ -869,7 +878,7 @@ assist_preconfig() {
 ##
 ##        src=_path or url to config file_
 ##
-## (Note that unlike boot variables that need the `assist_` prefix, 
+## (Note that unlike boot variables that need the `assist_` prefix,
 ## configuration scripts only need `src` to be specified.)
 ##
 assist_autocfg() {
@@ -902,7 +911,7 @@ assist_src() {
       rm -f $x
     else
       [ -n "$auto_continue" ] && return
-      dlg --yesno "Unable to retrieve autoconfig script: 
+      dlg --yesno "Unable to retrieve autoconfig script:
 
 $url.
 
@@ -967,7 +976,7 @@ assist_inst_post() {
 ## This is configured by `target` and `autopart` variables.
 ## The function to override is `assist_inst_partition`.  Because
 ## the bootloader is tightly integrated with the partitioning,
-## there are two additional override functions: 
+## there are two additional override functions:
 ##
 ## - `assist_inst_part1_$bootloader`
 ## - `assist_inst_part2_$bootloader`
@@ -975,8 +984,9 @@ assist_inst_post() {
 ## The default paritioning will create a GPT partioning table.
 ## After that partitions will be formated (`mkswap` or `mkfs`) and
 ## mounted automatically under `/mnt`.
-## 
+##
 assist_inst_part1_syslinux() {
+  # Make sure that we have a valid boot record
   dd bs=440 conv=notrunc count=1 if=/usr/lib/syslinux/gptmbr.bin of=$disc \
        || exit 1
 }
@@ -1076,10 +1086,10 @@ assist_inst_fstab() {
 ##
 ## #### syslinux
 ##
-## Will modify the `syslinux.cfg` file to point to the right `root` 
-## device and also will add the `nomodeset` parameter if it was 
+## Will modify the `syslinux.cfg` file to point to the right `root`
+## device and also will add the `nomodeset` parameter if it was
 ## specified when booting the installation media.
-## 
+##
 assist_inst_syslinux() {
   local rootdev=$(awk '$2 == "/mnt" { print $1 }' < /proc/mounts)
 
@@ -1272,17 +1282,23 @@ assist_doc() {
 	  ## - `text` : plain text output
 	  cat
 	  ;;
-        html)
+	html)
 	  ## - `html` : HTML document
 	  markdown
 	  ;;
 	viewhtml)
 	  ## - `viewhtml` : Will show manual on a browser window.
 	  if type firefox ; then
+	    # If firefox is available, we start it with a new
+	    # profile. This make sure that we do not reuse any
+	    # running firefox instance, and a new instance is
+	    # created.  When the users closes the firefox window
+	    # then we know that we can delete the temp file.
 	    wrkdir=$(mktemp -d)
 	    trap "rm -rf $wrkdir" EXIT
 	    markdown > $wrkdir/assist_doc.html
 	    HOME=$wrkdir firefox -no-remote $wrkdir/assist_doc.html
+	    rm -rf $wrkdir
 	  else
 	    local output=/tmp/md.$UID.html
 	    rm -f $output
@@ -1381,6 +1397,9 @@ assist_finalize() {
 
 ######################################################################
 #
+# The following are simple, useful support functions
+#
+######################################################################
 fatal() {
   echo "$@" 1>&2
   exit 1
@@ -1394,8 +1413,9 @@ dlg() (
     exec 3>&1
     exec 1>&2
     exec 2>&3
-    exec dialog --backtitle "Archlinux Installer Script ($ver)" "$@"
+    exec dialog --backtitle "ASSIST ($ver)" "$@"
 )
+
 EDITOR=
 edit() {
   # let user choose preferred editor
