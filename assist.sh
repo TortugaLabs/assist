@@ -1,5 +1,5 @@
 #!/bin/sh
-ver=0.3dev
+ver=0.4pre
 ##
 ## ASSIST (<VER>)
 ## ==============
@@ -74,7 +74,7 @@ assist_setup() {
 ##
 ##
 ## ### From the net
-## 
+##
 ## You need to make sure that you have a working internet connection.
 ## Enter the following:
 ##
@@ -126,10 +126,10 @@ assist_kbdlayout() {
       || kbd="$dftkbd"
   loadkeys $kbd || pause
 }
-## For many countries and keyboard types appropriate keymaps are available 
-## already, and a command like `loadkeys uk` might do what you want. More 
-## available keymap files can be found in `/usr/share/kbd/keymaps/` 
-## (you can omit the keymap path and file extension when using `loadkeys`). 
+## For many countries and keyboard types appropriate keymaps are available
+## already, and a command like `loadkeys uk` might do what you want. More
+## available keymap files can be found in `/usr/share/kbd/keymaps/`
+## (you can omit the keymap path and file extension when using `loadkeys`).
 ##
 ## _ASSIST_ will look in `/usr/share/kbd/keymaps/` and let you select a
 ## Keymap from there.
@@ -137,7 +137,7 @@ assist_kbdlayout() {
 ## #### Networking
 ##
 ## Usually a DHCP service is already enabled for all available devices.  
-## Somtimes this may fail, or you need to configure either _wireless_
+## Sometimes this may fail, or you need to configure either _wireless_
 ## or _static IP_.
 ##
 assist_netsetup() {
@@ -415,7 +415,7 @@ assist_inputpart_none() {
 ## #### Bootloader
 ##
 ## In the spirit of keeping things simple, _ASSIST_ defaults to *SYSLINUX*`
-## for the bootloader.  
+## for the bootloader.
 ##
 
 assist_input_syslinux() {
@@ -437,7 +437,7 @@ assist_input_bootloader() {
 ##
 ## This lets you customize the pacman mirror list.
 ##
-## This copy of the mirrorlist will be installed on your new system by 
+## This copy of the mirrorlist will be installed on your new system by
 ## pacstrap as well, so it's worth getting it right.
 ##
 ## The following options are available:
@@ -489,55 +489,55 @@ This copy of the mirrorlist will be installed on your new system by pacstrap as 
     country)
       # Select country
       local countries=(
-	  "AU" "Australia" 
+	  "AU" "Australia"
 	  "BY" "Belarus"
-	  "BE" "Belgium" 
-	  "BR" "Brazil" 
-	  "BG" "Bulgaria" 
-	  "CA" "Canada" 
-	  "CL" "Chile" 
-	  "CN" "China" 
-	  "CO" "Colombia" 
-	  "CZ" "Czech Republic" 
-	  "DE" "Denmark" 
-	  "EE" "Estonia" 
+	  "BE" "Belgium"
+	  "BR" "Brazil"
+	  "BG" "Bulgaria"
+	  "CA" "Canada"
+	  "CL" "Chile"
+	  "CN" "China"
+	  "CO" "Colombia"
+	  "CZ" "Czech Republic"
+	  "DE" "Denmark"
+	  "EE" "Estonia"
 	  "FI" "Finland"
-	  "FR" "France" 
-	  "DE" "Germany" 
-	  "GR" "Greece" 
-	  "HU" "Hungary" 
-	  "IN" "India" 
-	  "IE" "Ireland" 
-	  "IL" "Israel" 
-	  "IT" "Italy" 
-	  "JP" "Japan" 
-	  "KZ" "Kazakhstan" 
-	  "KR" "Korea" 
-	  "LV" "Latvia" 
-	  "LU" "Luxembourg" 
-	  "MK" "Macedonia" 
-	  "NL" "Netherlands" 
+	  "FR" "France"
+	  "DE" "Germany"
+	  "GR" "Greece"
+	  "HU" "Hungary"
+	  "IN" "India"
+	  "IE" "Ireland"
+	  "IL" "Israel"
+	  "IT" "Italy"
+	  "JP" "Japan"
+	  "KZ" "Kazakhstan"
+	  "KR" "Korea"
+	  "LV" "Latvia"
+	  "LU" "Luxembourg"
+	  "MK" "Macedonia"
+	  "NL" "Netherlands"
 	  "NC" "New Caledonia"
-	  "NZ" "New Zealand" 
-	  "NO" "Norway" 
-	  "PL" "Poland" 
-	  "PT" "Portugal" 
-	  "RO" "Romania" 
-	  "RU" "Russian" 
-	  "RS" "Serbia" 
-	  "SG" "Singapore" 
-	  "SK" "Slovakia" 
+	  "NZ" "New Zealand"
+	  "NO" "Norway"
+	  "PL" "Poland"
+	  "PT" "Portugal"
+	  "RO" "Romania"
+	  "RU" "Russian"
+	  "RS" "Serbia"
+	  "SG" "Singapore"
+	  "SK" "Slovakia"
 	  "ZA" "South Africa"
-	  "ES" "Spain" 
-	  "LK" "Sri Lanka" 
-	  "SE" "Sweden" 
-	  "CH" "Switzerland" 
-	  "TW" "Taiwan" 
-	  "TR" "Turkey" 
-	  "UA" "Ukraine" 
-	  "GB" "United Kingdom" 
-	  "US" "United States" 
-	  "UZ" "Uzbekistan" 
+	  "ES" "Spain"
+	  "LK" "Sri Lanka"
+	  "SE" "Sweden"
+	  "CH" "Switzerland"
+	  "TW" "Taiwan"
+	  "TR" "Turkey"
+	  "UA" "Ukraine"
+	  "GB" "United Kingdom"
+	  "US" "United States"
+	  "UZ" "Uzbekistan"
 	  "VN" "Viet Nam"
       )
       country=$(dlg --menu "Select your country" 0 0 0 "${countries[@]}")
@@ -550,7 +550,7 @@ This copy of the mirrorlist will be installed on your new system by pacstrap as 
 }
 ##
 ## When configuring by country, you will select a country and this will
-## in turn use the URL:  
+## in turn use the URL:
 ##
 ## <https://www.archlinux.org/mirrorlist/?country=$country&protocol=ftp&protocol=http&ip_version=4&use_mirror_status=on>
 ##
@@ -598,7 +598,7 @@ assist_input_software() {
 
 assist_input_tz() {
   [ -n "$tz" ] && return
-  
+
   local zone subzone zlst szlst i zdir=/usr/share/zoneinfo back="<back>"
   zlst=()
   for i in $(ls -1 $zdir)
@@ -656,7 +656,7 @@ assist_input_locale() {
 ##   - hostname
 ##   - timezone
 ##   - locale
-## - set-up a basic `dhcp` based `netcfg` profile 
+## - set-up a basic `dhcp` based `netcfg` profile
 ## - create a initramfs file
 ##
 ## This is a good time to take a coffee break.
@@ -708,7 +708,7 @@ assist_new_user() {
 
 The following users are currently defined in the system:
 
-$(awk -F: '$3 >= '$uid_min' { print $1}' /mnt/etc/passwd | tr '\n' ' ')" 0 0 
+$(awk -F: '$3 >= '$uid_min' { print $1}' /mnt/etc/passwd | tr '\n' ' ')" 0 0
   do
     echo ''
     echo -n "Enter username: "
@@ -761,7 +761,7 @@ assist_cfg_defaults() {
   locale=""
   ##
   ## In addition, the following boolean variables control user interaction
-  ## 
+  ##
   ## - `auto_continue` : will skip some of the prompts
   auto_continue=""
   ## - `no_pause : will skip all `pause` prompts.
@@ -878,7 +878,7 @@ assist_preconfig() {
 ##
 ##        src=_path or url to config file_
 ##
-## (Note that unlike boot variables that need the `assist_` prefix, 
+## (Note that unlike boot variables that need the `assist_` prefix,
 ## configuration scripts only need `src` to be specified.)
 ##
 assist_autocfg() {
@@ -911,7 +911,7 @@ assist_src() {
       rm -f $x
     else
       [ -n "$auto_continue" ] && return
-      dlg --yesno "Unable to retrieve autoconfig script: 
+      dlg --yesno "Unable to retrieve autoconfig script:
 
 $url.
 
@@ -976,7 +976,7 @@ assist_inst_post() {
 ## This is configured by `target` and `autopart` variables.
 ## The function to override is `assist_inst_partition`.  Because
 ## the bootloader is tightly integrated with the partitioning,
-## there are two additional override functions: 
+## there are two additional override functions:
 ##
 ## - `assist_inst_part1_$bootloader`
 ## - `assist_inst_part2_$bootloader`
@@ -984,7 +984,7 @@ assist_inst_post() {
 ## The default paritioning will create a GPT partioning table.
 ## After that partitions will be formated (`mkswap` or `mkfs`) and
 ## mounted automatically under `/mnt`.
-## 
+##
 assist_inst_part1_syslinux() {
   # Make sure that we have a valid boot record
   dd bs=440 conv=notrunc count=1 if=/usr/lib/syslinux/gptmbr.bin of=$disc \
