@@ -73,10 +73,10 @@ Initially _ASSIST_ will ask the user for some pre-configuration information
 
 #### Keyboard Layout
 
-For many countries and keyboard types appropriate keymaps are available 
-already, and a command like `loadkeys uk` might do what you want. More 
-available keymap files can be found in `/usr/share/kbd/keymaps/` 
-(you can omit the keymap path and file extension when using `loadkeys`). 
+For many countries and keyboard types appropriate keymaps are available
+already, and a command like `loadkeys uk` might do what you want. More
+available keymap files can be found in `/usr/share/kbd/keymaps/`
+(you can omit the keymap path and file extension when using `loadkeys`).
 
 _ASSIST_ will look in `/usr/share/kbd/keymaps/` and let you select a
 Keymap from there.
@@ -84,7 +84,7 @@ Keymap from there.
 #### Networking
 
 Usually a DHCP service is already enabled for all available devices.  
-Somtimes this may fail, or you need to configure either _wireless_
+Sometimes this may fail, or you need to configure either _wireless_
 or _static IP_.
 
 
@@ -146,14 +146,14 @@ target and that it is mounted under `/mnt`.
 #### Bootloader
 
 In the spirit of keeping things simple, _ASSIST_ defaults to *SYSLINUX*`
-for the bootloader.  
+for the bootloader.
 
 
 #### Mirror lists
 
 This lets you customize the pacman mirror list.
 
-This copy of the mirrorlist will be installed on your new system by 
+This copy of the mirrorlist will be installed on your new system by
 pacstrap as well, so it's worth getting it right.
 
 The following options are available:
@@ -167,7 +167,7 @@ The following options are available:
 
 
 When configuring by country, you will select a country and this will
-in turn use the URL:  
+in turn use the URL:
 
 <https://www.archlinux.org/mirrorlist/?country=$country&protocol=ftp&protocol=http&ip_version=4&use_mirror_status=on>
 
@@ -203,7 +203,7 @@ Normally this would include:
   - hostname
   - timezone
   - locale
-- set-up a basic `dhcp` based `netcfg` profile 
+- set-up a basic `dhcp` based `netcfg` profile
 - create a initramfs file
 
 This is a good time to take a coffee break.
@@ -324,7 +324,7 @@ specified from the boot prompt or the command line with:
 
        src=_path or url to config file_
 
-(Note that unlike boot variables that need the `assist_` prefix, 
+(Note that unlike boot variables that need the `assist_` prefix,
 configuration scripts only need `src` to be specified.)
 
 
@@ -375,7 +375,7 @@ Partitioning
 This is configured by `target` and `autopart` variables.
 The function to override is `assist_inst_partition`.  Because
 the bootloader is tightly integrated with the partitioning,
-there are two additional override functions: 
+there are two additional override functions:
 
 - `assist_inst_part1_$bootloader`
 - `assist_inst_part2_$bootloader`
