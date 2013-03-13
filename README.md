@@ -496,6 +496,12 @@ Usage:
        assist inject [source_img] [destination_img]
 
 
+Known Issues
+============
+
+- netcfg templates do not seem to be 100% accurate.
+
+
 Copyright
 =========
 

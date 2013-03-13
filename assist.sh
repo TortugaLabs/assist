@@ -1223,6 +1223,8 @@ assist_inst_mkinitcpio() {
 ## Available sub commands:
 ##
 assist_main() {
+  assist="$ver"	    # Signal any expansion scripts that assist is running
+
   local op="$1" ; shift
   case "$op" in
     inject)
@@ -1491,10 +1493,16 @@ umount_all() {
 ######################################################################
 # Some preparation code.  This makes it easier to deploy from web scripts
 oIFS="$IFS"
-[ -n "$url" ] && return	# Avoid src loops...
+[ -n "$assist" ] && return	# Avoid src loops...
 assist_main "$@"
 exit $?
 
+##
+## Known Issues
+## ============
+##
+## - netcfg templates do not seem to be 100% accurate.
+##
 ##
 ## Copyright
 ## =========
