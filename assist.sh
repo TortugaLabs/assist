@@ -1312,6 +1312,10 @@ assist_doc() {
       -e 's/^[ 	]*##[ 	]*$//' \
       -e 's/^[ 	]*## //' \
       -e 's/^[ 	]*##	/	/' | (
+      if ! type markdown >/dev/null 2>&1 ; then
+	set - text
+      fi
+
       case "$1" in
 	text)
 	  ## - `text` : plain text output
@@ -1535,7 +1539,8 @@ exit $?
 ## ============
 ##
 ## - netcfg templates do not seem to be 100% accurate. (WIP)
-##
+## - we would like to create a table of contents automatically
+##   for the HTML output
 ##
 ## Copyright
 ## =========
