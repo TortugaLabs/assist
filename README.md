@@ -499,7 +499,7 @@ Usage:
 Known Issues
 ============
 
-- netcfg templates do not seem to be 100% accurate.
+- netcfg templates do not seem to be 100% accurate. (WIP)
 
 
 Copyright
