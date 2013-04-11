@@ -499,8 +499,9 @@ Usage:
 Known Issues
 ============
 
-- netcfg templates do not seem to be 100% accurate.
-
+- netcfg templates do not seem to be 100% accurate. (WIP)
+- we would like to create a table of contents automatically
+  for the HTML output
 
 Copyright
 =========

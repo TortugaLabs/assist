@@ -1163,11 +1163,16 @@ assist_inst_locale() {
 ## found in the system.
 ##
 assist_inst_netcfg() {
-  local net_profiles="" dev wdev np oldnames=n
+  local net_profiles="" sysdev wdev np
 
   # Basic netcfg install
-  for dev in $(grep '^ *[a-z0-9]*:' /proc/net/dev | cut -d: -f1 | grep -v lo )
+  for sysdev in /sys/class/net/*
   do
+    local dev=$(basename $sysdev)
+
+    [ $dev = "lo" ] && continue		# Don't bother with this one...
+
+    # Determine if this is a wifi device and skip it if so
     local wifi=no
     for wdev in $(grep '^ *[a-z0-9]*:' /proc/net/wireless | cut -d: -f1 )
     do
@@ -1176,9 +1181,26 @@ assist_inst_netcfg() {
       break
     done
     [ $wifi = yes ] && continue
-    # Determine if we are using oldstyle/newstyle names
-    grep -q '^eth' <<<"$dev" && oldnames=y
 
+    # Determine what will be the udev name for the interrace
+    # as it may change for the next reboot
+
+    local udev_output=$(udevadm test-builtin net_id $sysdev)
+    local udev_name=$(
+	# We want to make sure we pick the right name...
+	for n in ID_NET_NAME_ONBOARD ID_NET_NAME_SLOT ID_NET_NAME_PATH
+	do
+	  q=$(awk -F= '$1 == "'"$n"'" { print $2 }' <<<"$udev_output")
+	  if [ -n "$q" ] ; then
+	    echo $q
+	    break
+	  fi
+	done
+    )
+    echo "Configuring $dev as $udev_name..." 1>&2
+    [ -n $udev_name ] && dev=$udev_name
+
+    # Basic dhcp configuration...
     net_profiles="$net_profiles net-$dev"
     cat >/mnt/etc/network.d/net-$dev <<-EOF
 	CONNECTION='ethernet'
@@ -1196,10 +1218,6 @@ assist_inst_netcfg() {
   do
       arch-chroot /mnt systemctl enable netcfg@$np.service
   done
-  if [ $oldnames = y ] ; then
-    echo "Disabling predictable Network Interface names..."
-    ln -s /dev/null /mnt/etc/udev/rules.d/80-net-name-slot.rules
-  fi
 }
 
 ##
@@ -1239,8 +1257,23 @@ assist_main() {
       ## - `setup` - Performs an ArchLinux install
       assist_setup "$@"
       ;;
+    ver)
+      cat <<-EOF
+	ASSIST $ver
+	Copyright (C) 2013 Alejandro Liu
+	This program comes with ABSOLUTELY NO WARRANTY.
+	This is free software, and you are welcome to redistribute it
+	under certain conditions.
+	For details type "$0 doc" and refer to the "Copyright" section.
+	EOF
+      ;;
     *)
-      fatal "ASSIST Unknown sub-command: $op"
+      cat 1>&2 <<-EOF
+	$op: Unknown sub-command (ASSIST $ver)
+
+	Must be one of "setup" (default), "doc", "inject" or "ver".
+	EOF
+      exit 1
       ;;
   esac
 }
@@ -1279,6 +1312,10 @@ assist_doc() {
       -e 's/^[ 	]*##[ 	]*$//' \
       -e 's/^[ 	]*## //' \
       -e 's/^[ 	]*##	/	/' | (
+      if ! type markdown >/dev/null 2>&1 ; then
+	set - text
+      fi
+
       case "$1" in
 	text)
 	  ## - `text` : plain text output
@@ -1286,7 +1323,7 @@ assist_doc() {
 	  ;;
 	html)
 	  ## - `html` : HTML document
-	  markdown
+	  gen_html
 	  ;;
 	viewhtml)
 	  ## - `viewhtml` : Will show manual on a browser window.
@@ -1298,13 +1335,13 @@ assist_doc() {
 	    # then we know that we can delete the temp file.
 	    wrkdir=$(mktemp -d)
 	    trap "rm -rf $wrkdir" EXIT
-	    markdown > $wrkdir/assist_doc.html
+	    gen_html > $wrkdir/assist_doc.html
 	    HOME=$wrkdir firefox -no-remote $wrkdir/assist_doc.html
 	    rm -rf $wrkdir
 	  else
 	    local output=/tmp/md.$UID.html
 	    rm -f $output
-	    markdown > $output
+	    gen_html > $output
 	    xdg-open $output
 	  fi
 	  ;;
@@ -1490,6 +1527,64 @@ umount_all() {
 
 }
 
+gen_html() {
+    #
+    # Genreate HTML using Markdown and adding Javascript to generate
+    # table of contents automatically
+    #
+    cat <<-EOF
+	<script>
+	window.onload = function () {
+	    var toc = "";
+	    var level = 0;
+
+	    document.getElementById("contents").innerHTML =
+	    	document.getElementById("contents").innerHTML.replace(
+	    		/<h([\d])>([^<]+)<\/h([\d])>/gi,
+	    		function (str, openLevel, titleText, closeLevel) {
+	    			if (openLevel != closeLevel) {
+	    				return str;
+	    			}
+
+	    			if (openLevel > level) {
+	    				toc += (new Array(openLevel - level + 1)).join("<ul>");
+	    			} else if (openLevel < level) {
+	    				toc += (new Array(level - openLevel + 1)).join("</ul>");
+	    			}
+
+	    			level = parseInt(openLevel);
+
+	    			var anchor = titleText.replace(/ /g, "_");
+	    			toc += "<li><a href=\"#" + anchor + "\">" + titleText
+	    				+ "</a></li>";
+
+	    			return "<h" + openLevel + "><a name=\"" + anchor + "\">"
+	    				+ titleText + "</a></h" + closeLevel + ">";
+	    		}
+	    	);
+
+	    if (level) {
+	    	toc += (new Array(level + 1)).join("</ul>");
+	    }
+
+	    document.getElementById("toc").innerHTML += toc;
+	};
+	</script>
+	<body>
+	<h1>ASSIST</h1>
+	<div id="toc">
+	  <h3>Table of Contents</h3>
+	</div>
+	<hr/>
+	<div id="contents">
+	EOF
+	markdown
+	cat <<-EOF
+	</dvi>
+	</body>
+	EOF
+}
+
 ######################################################################
 # Some preparation code.  This makes it easier to deploy from web scripts
 oIFS="$IFS"
@@ -1501,8 +1596,9 @@ exit $?
 ## Known Issues
 ## ============
 ##
-## - netcfg templates do not seem to be 100% accurate.
-##
+## - netcfg templates do not seem to be 100% accurate. (WIP)
+## - we would like to create a table of contents automatically
+##   for the HTML output
 ##
 ## Copyright
 ## =========
