@@ -1338,7 +1338,7 @@ assist_inject() {
   WRKDIR=$(mktemp -d)
   trap "rm -rf $WRKDIR" EXIT
   echo -n "Unpacking initramfs image "
-  xz -d < "$1" | ( cd $WRKDIR && cpio -id ) || fatal "Unpack failed"
+  xz -d < "$1" | ( cd $WRKDIR && bsdcpio -id ) || fatal "Unpack failed"
   echo "Patching image"
   echo 'LATEHOOKS="$LATEHOOKS assist"' >> $WRKDIR/config
   (
@@ -1349,7 +1349,7 @@ assist_inject() {
   cat < "$0"  >$WRKDIR/assist.sh
   chmod 755 $WRKDIR/assist.sh
   echo -n "Repacking image "
-  ( cd $WRKDIR ; find . | cpio -H newc -o ) | gzip -v9 > "$2"
+  ( cd $WRKDIR ; find . -print0 | bsdcpio -R 0:0 -0 -o -H newc) | gzip -v9 > "$2"
 }
 
 
