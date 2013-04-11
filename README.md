@@ -496,6 +496,15 @@ Usage:
        assist inject [source_img] [destination_img]
 
 
+Changes
+=======
+
+* 0.4:
+  * predictable interface names in supported in `netcfg`.
+  * Added a table of contents to the html help.
+  * Removed dependancy on `cpio`.  Using `bsdcpio` which is part
+    or `base` instead.
+
 Known Issues
 ============
 
