@@ -1323,7 +1323,7 @@ assist_doc() {
 	  ;;
 	html)
 	  ## - `html` : HTML document
-	  markdown
+	  gen_html
 	  ;;
 	viewhtml)
 	  ## - `viewhtml` : Will show manual on a browser window.
@@ -1335,13 +1335,13 @@ assist_doc() {
 	    # then we know that we can delete the temp file.
 	    wrkdir=$(mktemp -d)
 	    trap "rm -rf $wrkdir" EXIT
-	    markdown > $wrkdir/assist_doc.html
+	    gen_html > $wrkdir/assist_doc.html
 	    HOME=$wrkdir firefox -no-remote $wrkdir/assist_doc.html
 	    rm -rf $wrkdir
 	  else
 	    local output=/tmp/md.$UID.html
 	    rm -f $output
-	    markdown > $output
+	    gen_html > $output
 	    xdg-open $output
 	  fi
 	  ;;
@@ -1525,6 +1525,64 @@ umount_all() {
     umount $(awk '$2 ~ /^\'$mnt'/ { print $2 }' < /proc/mounts | sort -r)
     swapoff -a
 
+}
+
+gen_html() {
+    #
+    # Genreate HTML using Markdown and adding Javascript to generate
+    # table of contents automatically
+    #
+    cat <<-EOF
+	<script>
+	window.onload = function () {
+	    var toc = "";
+	    var level = 0;
+
+	    document.getElementById("contents").innerHTML =
+	    	document.getElementById("contents").innerHTML.replace(
+	    		/<h([\d])>([^<]+)<\/h([\d])>/gi,
+	    		function (str, openLevel, titleText, closeLevel) {
+	    			if (openLevel != closeLevel) {
+	    				return str;
+	    			}
+
+	    			if (openLevel > level) {
+	    				toc += (new Array(openLevel - level + 1)).join("<ul>");
+	    			} else if (openLevel < level) {
+	    				toc += (new Array(level - openLevel + 1)).join("</ul>");
+	    			}
+
+	    			level = parseInt(openLevel);
+
+	    			var anchor = titleText.replace(/ /g, "_");
+	    			toc += "<li><a href=\"#" + anchor + "\">" + titleText
+	    				+ "</a></li>";
+
+	    			return "<h" + openLevel + "><a name=\"" + anchor + "\">"
+	    				+ titleText + "</a></h" + closeLevel + ">";
+	    		}
+	    	);
+
+	    if (level) {
+	    	toc += (new Array(level + 1)).join("</ul>");
+	    }
+
+	    document.getElementById("toc").innerHTML += toc;
+	};
+	</script>
+	<body>
+	<h1>ASSIST</h1>
+	<div id="toc">
+	  <h3>Table of Contents</h3>
+	</div>
+	<hr/>
+	<div id="contents">
+	EOF
+	markdown
+	cat <<-EOF
+	</dvi>
+	</body>
+	EOF
 }
 
 ######################################################################
