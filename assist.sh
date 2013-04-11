@@ -1190,7 +1190,7 @@ assist_inst_netcfg() {
 	# We want to make sure we pick the right name...
 	for n in ID_NET_NAME_ONBOARD ID_NET_NAME_SLOT ID_NET_NAME_PATH
 	do
-	  q=$(awk -F= '$1 == "'"$n"'" { print $2 }')
+	  q=$(awk -F= '$1 == "'"$n"'" { print $2 }' <<<"$udev_output")
 	  if [ -n "$q" ] ; then
 	    echo $q
 	    break
