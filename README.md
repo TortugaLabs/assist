@@ -1,5 +1,5 @@
 
-ASSIST (0.3rel)
+ASSIST (0.4pre)
 ==============
 _Arch System Software Installation Scripting Tool_
 
@@ -496,10 +496,26 @@ Usage:
        assist inject [source_img] [destination_img]
 
 
+Changes
+=======
+
+* 0.4:
+  * predictable interface names in supported in `netcfg`.
+  * Added a table of contents to the html help.
+  * Removed dependancy on `cpio`.  Using `bsdcpio` which is part
+    or `base` instead.
+
+Known Issues
+============
+
+- netcfg templates do not seem to be 100% accurate. (WIP)
+- we would like to create a table of contents automatically
+  for the HTML output
+
 Copyright
 =========
 
-   ASSIST 0.3rel  
+   ASSIST 0.4pre  
    Copyright (C) 2013 Alejandro Liu
 
    This program is free software: you can redistribute it and/or modify
