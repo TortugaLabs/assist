@@ -1605,9 +1605,8 @@ exit $?
 ## Known Issues
 ## ============
 ##
-## - netcfg templates do not seem to be 100% accurate. (WIP)
-## - we would like to create a table of contents automatically
-##   for the HTML output
+## - Does not support `netctl` package.  Waiting for an `archiso`
+##   that comes with `netctl`.
 ##
 ## Copyright
 ## =========
