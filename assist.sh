@@ -656,7 +656,7 @@ assist_input_locale() {
 ##   - hostname
 ##   - timezone
 ##   - locale
-## - set-up a basic `dhcp` based `netcfg` profile
+## - set-up a basic `dhcp` based `netctl` profile
 ## - create a initramfs file
 ##
 ## This is a good time to take a coffee break.
@@ -671,7 +671,7 @@ assist_install() {
   assist_inst_hostname
   assist_inst_tz
   assist_inst_locale
-  assist_inst_netcfg
+  assist_inst_netcf
   assist_inst_mkinitcpio
   assist_inst_post
 }
@@ -1157,15 +1157,15 @@ assist_inst_locale() {
 }
 ## #### Network
 ##
-## Function to override: `assist_inst_netcfg`.
+## Function to override: `assist_inst_netcf`.
 ##
-## Creates a basic `netcfg` profile for all the wired interfaces
+## Creates a basic `netctl` profile for all the wired interfaces
 ## found in the system.
 ##
-assist_inst_netcfg() {
+assist_inst_netcf() {
   local net_profiles="" sysdev wdev np
 
-  # Basic netcfg install
+  # Basic netctl install
   for sysdev in /sys/class/net/*
   do
     local dev=$(basename $sysdev)
@@ -1202,21 +1202,21 @@ assist_inst_netcfg() {
 
     # Basic dhcp configuration...
     net_profiles="$net_profiles net-$dev"
-    cat >/mnt/etc/network.d/net-$dev <<-EOF
-	CONNECTION='ethernet'
-	DESCRIPTION='Basic dhcp config for $dev'
-	INTERFACE='$dev'
-	IP='dhcp'
+    cat >/mnt/etc/netctl/net-$dev <<-EOF
+	Description='Basic DHCP config for $dev'
+	Interface=$dev
+	Connection=ethernet
+	IP=dhcp
 	# # For DHCPv6
-	#IP6='dhcp'
+	#IP6=dhcp
 	# # for IPv6 autoconf
-	#IP6='stateless'
+	#IP6=stateless
 	EOF
   done
 
   for np in $net_profiles
   do
-      arch-chroot /mnt systemctl enable netcfg@$np.service
+      arch-chroot /mnt netctl enable $np
   done
 }
 
@@ -1258,6 +1258,7 @@ assist_main() {
       assist_setup "$@"
       ;;
     ver)
+      ## - `ver` - Show version and copyright information
       cat <<-EOF
 	ASSIST $ver
 	Copyright (C) 2013 Alejandro Liu
@@ -1596,6 +1597,9 @@ exit $?
 ## Changes
 ## =======
 ##
+## * 0.5:
+##   * network is configured for `netctl` (instead of `netcfg`)
+##
 ## * 0.4:
 ##   * predictable interface names in supported in `netcfg`.
 ##   * Added a table of contents to the html help.
@@ -1605,14 +1609,14 @@ exit $?
 ## Known Issues
 ## ============
 ##
-## - Does not support `netctl` package.  Waiting for an `archiso`
-##   that comes with `netctl`.
+## - It no longer supports `netcfg`.
 ##
 ## Copyright
 ## =========
 ##
 ##    ASSIST <VER>  
-##    Copyright (C) 2013 Alejandro Liu
+##    Copyright (C) 2013 Alejandro Liu  
+##    All Rights Reserved.
 ##
 ##    This program is free software: you can redistribute it and/or modify
 ##    it under the terms of the GNU General Public License as published by
