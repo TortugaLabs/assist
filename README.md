@@ -1,5 +1,5 @@
 
-ASSIST (0.4rel)
+ASSIST (0.5pre)
 ==============
 _Arch System Software Installation Scripting Tool_
 
@@ -203,7 +203,7 @@ Normally this would include:
   - hostname
   - timezone
   - locale
-- set-up a basic `dhcp` based `netcfg` profile
+- set-up a basic `dhcp` based `netctl` profile
 - create a initramfs file
 
 This is a good time to take a coffee break.
@@ -440,9 +440,9 @@ the system locale in `/etc/locale.conf` and `/etc/locale.gen`.
 
 #### Network
 
-Function to override: `assist_inst_netcfg`.
+Function to override: `assist_inst_netcf`.
 
-Creates a basic `netcfg` profile for all the wired interfaces
+Creates a basic `netctl` profile for all the wired interfaces
 found in the system.
 
 
@@ -463,6 +463,7 @@ Available sub commands:
 - `inject` - Injects _ASSIST_ into a `initrd` image.
 - `doc` - display documentation
 - `setup` - Performs an ArchLinux install
+- `ver` - Show version and copyright information
 
 The default sub-command if none is specified is `setup`.
 
@@ -499,6 +500,9 @@ Usage:
 Changes
 =======
 
+* 0.5:
+  * network is configured for `netctl` (instead of `netcfg`)
+
 * 0.4:
   * predictable interface names in supported in `netcfg`.
   * Added a table of contents to the html help.
@@ -508,15 +512,14 @@ Changes
 Known Issues
 ============
 
-- netcfg templates do not seem to be 100% accurate. (WIP)
-- we would like to create a table of contents automatically
-  for the HTML output
+- It no longer supports `netcfg`.
 
 Copyright
 =========
 
-   ASSIST 0.4rel  
-   Copyright (C) 2013 Alejandro Liu
+   ASSIST 0.5pre  
+   Copyright (C) 2013 Alejandro Liu  
+   All Rights Reserved.
 
    This program is free software: you can redistribute it and/or modify
    it under the terms of the GNU General Public License as published by
