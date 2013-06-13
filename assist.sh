@@ -559,7 +559,7 @@ This copy of the mirrorlist will be installed on your new system by pacstrap as 
 assist_mirror_by_country() {
   local lst="$1" country="$2"
 
-  local url="https://www.archlinux.org/mirrorlist/?country=$country&protocol=ftp&protocol=http&ip_version=4&use_mirror_status=on"
+  local url="https://www.archlinux.org/mirrorlist/?country=$country&protocol=http&ip_version=4&use_mirror_status=on"
   local tmpfile=$(mktemp --suffix=-mirrorlist)
   wget -qO- "$url" | sed 's/^#Server/Server/g' > "$tmpfile"
   [ ! -f $lst.bak ] && cp $lst $lst.bak
@@ -1596,6 +1596,9 @@ exit $?
 ##
 ## Changes
 ## =======
+##
+## * 0.6:
+##   * Automatic mirror config by country removed "ftp" support.
 ##
 ## * 0.5:
 ##   * network is configured for `netctl` (instead of `netcfg`)
