@@ -241,6 +241,7 @@ assist_net_wifi() {
   local cif=$(pick_netif $*)
   wifi-menu || pause
 }
+
 ##
 ######################################################################
 ##
@@ -258,6 +259,8 @@ assist_net_wifi() {
 ##
 assist_setup_input() {
   # Prompt the user for configuration parameters...
+  assist_input_ready
+
   assist_input_hostname
   assist_input_partition
   assist_input_bootloader
@@ -266,6 +269,16 @@ assist_setup_input() {
   assist_input_tz
   assist_input_locale
 }
+#
+# This utility entry point can be hooked by other scripts, and it is meant
+# to be executed *before* any input happens.  The intention is that
+# scripts can be used to clean-up the screen.
+#
+assist_input_ready() {
+  echo 'Ready'
+}
+
+
 #
 assist_input_hostname() {
   [ -n "$sysname" ] && return
@@ -780,7 +793,7 @@ assist_cfg_defaults() {
   ## - `sw_recommended` : The list of recommended packages
   sw_recommended="gptfdisk"
   ## - `sw_suggested` : The list of suggested packages
-  sw_suggested="wget php dialog ed pm-utils mkinitcpio-nfs-utils nfs-utils ethtool net-tools ifplugd openssh autofs ntp"
+  sw_suggested="wget dialog ed pm-utils mkinitcpio-nfs-utils nfs-utils ethtool net-tools ifplugd openssh autofs ntp"
   ## - `sw_optional` : List of optional packages.
   sw_optional="base-devel"
   ## - `sw_deps` : Contains the list of software added by _ASSIST_ dependancies.
@@ -1599,6 +1612,8 @@ exit $?
 ##
 ## * 0.6:
 ##   * Automatic mirror config by country removed "ftp" support.
+##   * Added hook `assist_input_ready` to control when interactive
+##     input should start.
 ##
 ## * 0.5:
 ##   * network is configured for `netctl` (instead of `netcfg`)

@@ -500,6 +500,11 @@ Usage:
 Changes
 =======
 
+* 0.6:
+  * Automatic mirror config by country removed "ftp" support.
+  * Added hook `assist_input_ready` to control when interactive
+    input should start.
+
 * 0.5:
   * network is configured for `netctl` (instead of `netcfg`)
 
