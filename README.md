@@ -501,6 +501,7 @@ Changes
 =======
 
 * 0.6:
+  * Improved error handling on remote scripts
   * Automatic mirror config by country removed "ftp" support.
   * Added hook `assist_input_ready` to control when interactive
     input should start.
