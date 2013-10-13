@@ -502,6 +502,7 @@ Changes
 
 * 0.6:
   * Improved error handling on remote scripts
+  * Automatic mirror config by country removed "ftp" support.
 
 * 0.5:
   * network is configured for `netctl` (instead of `netcfg`)
