@@ -905,19 +905,30 @@ assist_src() {
   if [ -f  $url ] ; then
     . $url
   else
-    local x=$(mktemp)
-    if wget -O- $url > $x ; then
-      . $x
-      rm -f $x
-    else
-      [ -n "$auto_continue" ] && return
-      dlg --yesno "Unable to retrieve autoconfig script:
+    local x=$(mktemp) y
+    while true
+    do
+      if y=$(wget -O$x $url 2>&1) ; then
+	break
+      else
+	[ -n "$auto_continue" ] && return
+	dlg --yesno "Unable to retrieve autoconfig script: $url.
 
-$url.
+$y
 
-Do you want to continue?
-(Selecting NO will stop this script" 0 0 || aborted
-    fi
+Do you want to retry?
+    Selecting YES will retry download operation.
+    Selecting NO will continue the script.
+    Pres ESC (Escape) to abort installation
+" 0 0
+	local rc=$?
+	[ $rc -eq 255 ] && aborted # ESC pressed
+	[ $rc -eq 1 ] && return # NO pressed (continue script)
+      fi
+    done
+    echo "Running $url in $x"
+    . $x || pause
+    rm -f $x
   fi
 }
 ##
@@ -1596,6 +1607,9 @@ exit $?
 ##
 ## Changes
 ## =======
+##
+## * 0.6:
+##   * Improved error handling on remote scripts
 ##
 ## * 0.5:
 ##   * network is configured for `netctl` (instead of `netcfg`)

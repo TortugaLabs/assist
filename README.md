@@ -500,6 +500,9 @@ Usage:
 Changes
 =======
 
+* 0.6:
+  * Improved error handling on remote scripts
+
 * 0.5:
   * network is configured for `netctl` (instead of `netcfg`)
 
