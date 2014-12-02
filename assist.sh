@@ -1011,7 +1011,9 @@ assist_inst_post() {
 ##
 assist_inst_part1_syslinux() {
   # Make sure that we have a valid boot record
-  dd bs=440 conv=notrunc count=1 if=/usr/lib/syslinux/gptmbr.bin of=$disc \
+  local mbr=/usr/lib/syslinux/bios/gptmbr.bin
+  [ ! -f $mbr ] && mbr=/usr/lib/syslinux/gptmbr.bin
+  dd bs=440 conv=notrunc count=1 if=$mbr of=$disc \
        || exit 1
 }
 assist_inst_part2_syslinux() {
