@@ -1,5 +1,5 @@
 
-ASSIST (0.6pre)
+ASSIST (0.6rel)
 ==============
 _Arch System Software Installation Scripting Tool_
 
@@ -536,7 +536,7 @@ Known Issues
 Copyright
 =========
 
-   ASSIST 0.6pre  
+   ASSIST 0.6rel  
    Copyright (C) 2013,2016 Alejandro Liu  
    All Rights Reserved.
 

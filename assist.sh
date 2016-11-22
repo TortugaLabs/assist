@@ -1,5 +1,5 @@
 #!/bin/sh
-ver=0.6pre
+ver=0.6rel
 ##
 ## ASSIST (<VER>)
 ## ==============
