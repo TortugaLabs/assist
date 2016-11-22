@@ -1,4 +1,11 @@
 #!/bin/sh
+#
+# This script could be used as a pre-commit hook.
+# It makes sure that the README.md file is generated from the
+# assist.sh source.
+#
+# Just execute from the directory where assist.sh is placed.
+#
 
 #
 # Function to modify files in-place
