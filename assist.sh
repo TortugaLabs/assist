@@ -16,7 +16,7 @@ ver=0.7pre
 ## and the installation be mostly automated.
 ##
 ## _ASSIST_ does not try to handle all possible installation cases nor
-## tries to implement all the features available in the old AIF
+## tries to implement all the features available in the old `AIF`
 ## scripts.
 ##
 ## Using ASSIST
@@ -579,7 +579,7 @@ assist_mirror_by_country() {
     wget -qO- "$url" 
 	) | sed 's/^#Server/Server/g' > "$tmpfile"
   [ ! -f $lst.bak ] && cp $lst $lst.bak
-  cat $tmpfile >$lst.bak
+  cat $tmpfile >$lst
 }
 ##
 ## ### Software Selection
@@ -975,6 +975,17 @@ assist_setup_config() {
 ## You are encouraged to peek in the _ASSIST_ script to find out what
 ## functions are defined so you can override them.
 ##
+## So you can for example define a new `assist_inst_pre` function to
+## perform some preparation tasks before installation.
+##
+## Also, you could use a `src` specification to do a live upgrade of
+## _ASSIST_ itself.  For example, you may have an DVD image
+## that already calls _ASSIST_ automatically.  This DVD may be 
+## issued once every year.  However, you can put in the DVD
+## command line with a `src` statement pointint to the _ASSIST_
+## script from a web site.  This will cause _ASSIST_ to download
+## the newer version from the web site before continuing with the
+## installation.
 ######################################################################
 #
 assist_inst_pre() {
@@ -995,7 +1006,7 @@ assist_inst_post() {
 ## _ASSIST_ Installation Details
 ## ===========================
 ##
-## This section describes what _ASSIST_ does when performan an install.
+## This section describes what _ASSIST_ does when performing an install.
 ##
 ## Partitioning
 ## ------------
@@ -1640,7 +1651,8 @@ exit $?
 ##
 ##
 ## * 0.7:
-##   * _under development_
+##   * Fixed bug: Mirror selection by country did not work.
+##   * Documentation updates.
 ## * 0.6:
 ##   * Improved error handling on remote scripts
 ##   * Automatic mirror config by country removed "ftp" support.
