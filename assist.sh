@@ -78,7 +78,7 @@ assist_setup() {
 ## You need to make sure that you have a working internet connection.
 ## Enter the following:
 ##
-##        wget -O- https://raw.github.com/alejandroliu/assist/master/assist.sh | sh
+##        wget -O- https://raw.githubusercontent.com/TortugaLabs/assist/master/assist.sh | sh
 ##
 ##
 ## ### Injecting into INITRAMFS boot
@@ -794,9 +794,9 @@ assist_cfg_defaults() {
   ##    during software selection.
   sw_mandatory="base"
   ## - `sw_recommended` : The list of recommended packages
-  sw_recommended="gptfdisk"
+  sw_recommended="gptfdisk wget openssh"
   ## - `sw_suggested` : The list of suggested packages
-  sw_suggested="wget dialog ed pm-utils mkinitcpio-nfs-utils nfs-utils ethtool net-tools ifplugd openssh autofs ntp"
+  sw_suggested="dialog ed pm-utils mkinitcpio-nfs-utils nfs-utils ethtool net-tools ifplugd  autofs ntp"
   ## - `sw_optional` : List of optional packages.
   sw_optional="base-devel"
   ## - `sw_deps` : Contains the list of software added by _ASSIST_ dependancies.

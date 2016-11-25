@@ -47,7 +47,7 @@ _ASSIST_ can be invoked to install Arch Linux in a number of ways
 You need to make sure that you have a working internet connection.
 Enter the following:
 
-       wget -O- https://raw.github.com/alejandroliu/assist/master/assist.sh | sh
+       wget -O- https://raw.githubusercontent.com/TortugaLabs/assist/master/assist.sh | sh
 
 
 ### Injecting into INITRAMFS boot
